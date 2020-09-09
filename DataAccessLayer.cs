@@ -9,7 +9,7 @@ namespace WinFormContacts
 {
     public class DataAccessLayer
     {
-        private SqlConnection conn = new SqlConnection("Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=WinFormsContacts;Data Source=DESKTOP-PAV3A72\\SQLSERVER2017");
+        private SqlConnection conn = new SqlConnection("Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=WinFormsContacts;Data Source=DESKTOP-SNKM77R\\SQLSERVER2017");
 
         public void insertContact( Contact contact)
         {
@@ -48,6 +48,41 @@ namespace WinFormContacts
             {
                 conn.Close();
             }
+        }
+
+        public List<Contact> GetContacts()
+        {
+            List<Contact> contacts = new List<Contact>();
+            try
+            {
+                conn.Open();
+                string query = @"SELECT Id, FirstName, LastName, Phone, Address FROM Contacts";
+                SqlCommand command = new SqlCommand(query, conn);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    contacts.Add(new Contact
+                    {
+                        Id          = int.Parse(reader["Id"].ToString()),
+                        FirstName   = reader["FirstName"].ToString(),
+                        LastName    = reader["LastName"].ToString(),
+                        Phone       = reader["Phone"].ToString(),
+                        Address     = reader["FirstName"].ToString(),
+                    });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return contacts;
         }
     }
 

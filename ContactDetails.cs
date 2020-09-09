@@ -31,6 +31,14 @@ namespace WinFormContacts
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            this.saveContact();
+            this.Close();
+            ((Main)this.Owner).populateContacts();
+        }
+
+        private void saveContact()
+        {
+
             Contact contact = new Contact();
             contact.FirstName = textFirstName.Text;
             contact.LastName = textLastName.Text;
@@ -38,8 +46,7 @@ namespace WinFormContacts
             contact.Address = textAddress.Text;
 
 
-            // this._businessLogicLayer
-
+            this._businessLogicLayer.saveContact(contact);
         }
     }
 }

@@ -24,7 +24,12 @@ namespace WinFormContacts
                // _dataAccessLayer.updateContact(contact);
             }
 
-            return null;
+            return contact;
+        }
+
+        public List<Contact> getContacts()
+        {
+            return this._dataAccessLayer.GetContacts();
         }
 
     }
