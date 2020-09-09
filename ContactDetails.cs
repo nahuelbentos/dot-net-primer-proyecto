@@ -38,7 +38,7 @@ namespace WinFormContacts
             contact.Address = textAddress.Text;
 
 
-            this._businessLogicLayer
+            // this._businessLogicLayer
 
         }
     }

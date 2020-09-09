@@ -20,14 +20,33 @@ namespace WinFormContacts
                                 Insert Into Contacts(FirstName, LastName, Phone, Address)
                                 VALUES(@FirstName, @LastName, @Phone, @Address)";
 
-                SqlParameter parameter = new SqlParameter();
-                parameter.ParameterName "@FirstName";
+                SqlParameter firstName = new SqlParameter();
+                firstName.ParameterName = "@FirstName";
+                firstName.Value = contact.FirstName;
+                firstName.DbType = System.Data.DbType.String;
 
+
+                SqlParameter lastName = new SqlParameter("@LastName", contact.LastName);
+                SqlParameter phone = new SqlParameter("@Phone", contact.Phone);
+                SqlParameter address = new SqlParameter("@Address", contact.Address);
+
+                SqlCommand command = new SqlCommand(query, conn);
+                
+                command.Parameters.Add(firstName);
+                command.Parameters.Add(lastName);
+                command.Parameters.Add(phone);
+                command.Parameters.Add(address);
+
+                command.ExecuteNonQuery();
             }
             catch (Exception)
             {
-
+                
                 throw;
+            }
+            finally
+            {
+                conn.Close();
             }
         }
     }

@@ -21,8 +21,10 @@ namespace WinFormContacts
                 _dataAccessLayer.insertContact(contact);
             } else
             {
-                _dataAccessLayer.updateContact(contact);
+               // _dataAccessLayer.updateContact(contact);
             }
+
+            return null;
         }
 
     }
