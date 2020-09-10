@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,15 +22,20 @@ namespace WinFormContacts
                 _dataAccessLayer.insertContact(contact);
             } else
             {
-               // _dataAccessLayer.updateContact(contact);
+                _dataAccessLayer.updateContact(contact);
             }
 
             return contact;
         }
 
-        public List<Contact> getContacts()
+        public void deleteContact(int id)
         {
-            return this._dataAccessLayer.GetContacts();
+            _dataAccessLayer.deleteContact(id);
+        }
+
+        public List<Contact> getContacts(string filter = null)
+        {
+            return this._dataAccessLayer.GetContacts(filter);
         }
 
     }

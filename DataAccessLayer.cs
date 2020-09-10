@@ -9,7 +9,8 @@ namespace WinFormContacts
 {
     public class DataAccessLayer
     {
-        private SqlConnection conn = new SqlConnection("Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=WinFormsContacts;Data Source=DESKTOP-SNKM77R\\SQLSERVER2017");
+        // Notebook: 
+        private SqlConnection conn = new SqlConnection("Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=WinFormsContacts;Data Source=localhost\\SQLSERVER2017");
 
         public void insertContact( Contact contact)
         {
@@ -50,14 +51,90 @@ namespace WinFormContacts
             }
         }
 
-        public List<Contact> GetContacts()
+        public void updateContact( Contact contact)
         {
-            List<Contact> contacts = new List<Contact>();
+            try
+            {
+                conn.Open();
+                string query = @"UPDATE Contacts
+                                 SET FirstName  = @FirstName, 
+                                     LastName   = @LastName, 
+                                     Phone      = @Phone, 
+                                     Address    = @Address
+                                 WHERE Id = @Id";
+
+                SqlParameter id = new SqlParameter("@Id", contact.Id);
+                SqlParameter firstName = new SqlParameter("@FirstName", contact.FirstName);
+                SqlParameter lastName = new SqlParameter("@LastName", contact.LastName);
+                SqlParameter phone = new SqlParameter("@Phone", contact.Phone);
+                SqlParameter address = new SqlParameter("@Address", contact.Address);
+
+                SqlCommand command = new SqlCommand(query, conn);
+                command.Parameters.Add(id);
+                command.Parameters.Add(firstName);
+                command.Parameters.Add(lastName);
+                command.Parameters.Add(phone);
+                command.Parameters.Add(address);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public void deleteContact( int _id)
+        {
+            try
+            {
+                conn.Open();
+                string query = @"DELETE FROM Contacts
+                                 WHERE Id=@Id";
+
+                SqlParameter id = new SqlParameter("@Id", _id);
+                SqlCommand command = new SqlCommand(query, conn);
+                command.Parameters.Add(id);
+                command.ExecuteNonQuery();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+
+                conn.Close();
+            }
+        }
+        public List<Contact> GetContacts(string filter = null)
+        {
+            var contacts = new List<Contact>();
             try
             {
                 conn.Open();
                 string query = @"SELECT Id, FirstName, LastName, Phone, Address FROM Contacts";
-                SqlCommand command = new SqlCommand(query, conn);
+
+                SqlCommand command = new SqlCommand();
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    query += @" WHERE FirstName LIKE @Filter 
+                                OR LastName LIKE @Filter 
+                                OR Phone LIKE @Filter  
+                                OR Address LIKE @Filter";
+
+                    SqlParameter _filter = new SqlParameter("@Filter", $"%{filter}%");
+                    command.Parameters.Add(_filter);
+                }
+
+                command.CommandText = query;
+                command.Connection = conn;
                 SqlDataReader reader = command.ExecuteReader();
 
                 while (reader.Read())
@@ -68,7 +145,7 @@ namespace WinFormContacts
                         FirstName   = reader["FirstName"].ToString(),
                         LastName    = reader["LastName"].ToString(),
                         Phone       = reader["Phone"].ToString(),
-                        Address     = reader["FirstName"].ToString(),
+                        Address     = reader["Address"].ToString(),
                     });
                 }
             }
